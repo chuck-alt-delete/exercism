@@ -52,8 +52,7 @@ def value_of_ace(*cards):
             total += value_of_card(card)
     if total + 11 <= 21:
         return 11
-    else:
-        return 1
+    return 1
 
 def is_blackjack(*cards):
     """Determine if the hand is a 'natural' or 'blackjack'.
@@ -66,11 +65,7 @@ def is_blackjack(*cards):
     ten_cards = {'J', 'Q', 'K', '10'}
     cards = set(cards)
 
-    if 'A' in cards and cards.intersection(ten_cards):
-        return True
-    else:
-        return False
-
+    return bool('A' in cards and cards.intersection(ten_cards))
 
 def can_split_pairs(card_one, card_two):
     """Determine if a player can split their hand into two hands.
@@ -89,4 +84,4 @@ def can_double_down(*cards):
     :return: bool - if the hand can be doubled down (i.e. totals 9, 10 or 11 points).
     """
 
-    return True if sum(value_of_card(card) for card in cards) in {9,10,11} else False
+    return sum(value_of_card(card) for card in cards) in {9,10,11}
