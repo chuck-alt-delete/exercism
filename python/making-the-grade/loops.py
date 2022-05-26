@@ -45,7 +45,9 @@ def letter_grades(highest):
             86 <= "A" <= 100
     """
 
-    pass
+    interval = (highest - 40) // 4
+
+    return list(range(41,41 + 4*interval, interval))
 
 
 def student_ranking(student_scores, student_names):
@@ -56,14 +58,17 @@ def student_ranking(student_scores, student_names):
     :return: list - of strings in format ["<rank>. <student name>: <score>"].
     """
 
-    pass
+    return [f"{index+1}. {name}: {score}" for index, (name,score) in enumerate(zip(student_names,student_scores))]
 
 
-def perfect_score(student_info):
+def perfect_score(student_info: list) -> list:
     """Create a list that contains the name and grade of the first student to make a perfect score on the exam.
 
     :param student_info: list - of [<student name>, <score>] lists.
     :return: list - first `[<student name>, 100]` or `[]` if no student score of 100 is found.
     """
 
-    pass
+    for entry in student_info:
+        if entry[1] == 100:
+            return entry
+    return []
