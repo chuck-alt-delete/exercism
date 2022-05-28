@@ -19,12 +19,18 @@ class Alien:
     collision_detection(other): Implementation TBD.
     """
 
-    total_alients_created = 0
+    total_aliens_created = 0
+
+    @classmethod
+    def update_total_aliens_created(cls):
+        cls.total_aliens_created += 1
+
+
     def __init__(self,x_coordinate: int, y_coordinate: int) -> None:
         self.x_coordinate = x_coordinate
         self.y_coordinate = y_coordinate
         self.health = 3
-        Alien.total_alients_created += 1
+        Alien.update_total_aliens_created()
 
     def hit(self):
         self.health -= 1
@@ -34,7 +40,7 @@ class Alien:
 
     def teleport(self, new_x_coordinate, new_y_coordinate):
         self.x_coordinate = new_x_coordinate
-        self.y_coodinate = new_y_coordinate
+        self.y_coordinate = new_y_coordinate
 
     def collision_detection(self,other):
         pass
