@@ -3,7 +3,7 @@
 Suggestions:
 - should use classes for database and users
 - database should have O(1) lookups for individual users
-
+- the `test_both_users_have_0_balance` should show the lender having a negative balance (lender gives money) and the borrower should have a positive balance (just got money from the lender). 
 # Rest Api
 
 Welcome to Rest Api on Exercism's Python Track.
