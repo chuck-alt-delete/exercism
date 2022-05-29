@@ -34,7 +34,7 @@ class Alien:
 
     def hit(self):
         self.health -= 1
-    
+
     def is_alive(self):
         return self.health > 0
 
