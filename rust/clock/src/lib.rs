@@ -1,7 +1,7 @@
 use std::fmt;
 use num_integer::Integer;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct Clock {
     hours: i32,
     minutes: i32
@@ -42,13 +42,5 @@ impl Clock {
 impl fmt::Display for Clock {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{:02}:{:02}", self.hours, self.minutes)
-    }
-}
-
-impl PartialEq for Clock {
-    fn eq(&self, other: &Self) -> bool {
-        let normalized_self: Clock = Clock::new(self.hours, self.minutes);
-        let normalized_other: Clock = Clock::new(other.hours, other.minutes);
-        normalized_self.hours == normalized_other.hours && normalized_self.minutes == normalized_other.minutes
     }
 }
