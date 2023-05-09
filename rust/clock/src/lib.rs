@@ -34,10 +34,6 @@ impl Clock {
         let minutes_sum: i32 = self.minutes + minutes;
         let (mut h, mut m): (i32, i32) = (minutes_sum).div_rem(&60);
         h += self.hours;
-        if minutes_sum < 0 {
-            h -= 1;
-            m += 60;
-        }
         Clock::new(h, m)
     }
 
