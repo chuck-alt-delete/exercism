@@ -32,7 +32,7 @@ impl Clock {
 
     pub fn add_minutes(&self, minutes: i32) -> Self {
         let minutes_sum: i32 = self.minutes + minutes;
-        let (mut h, mut m): (i32, i32) = (minutes_sum).div_rem(&60);
+        let (mut h, m): (i32, i32) = (minutes_sum).div_rem(&60);
         h += self.hours;
         Clock::new(h, m)
     }
