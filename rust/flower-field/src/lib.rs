@@ -1,9 +1,12 @@
 use std::collections::HashMap;
 
 pub fn annotate(garden: &[&str]) -> Vec<String> {
-    if garden.is_empty() {
+    let rows = garden.len();
+    if rows == 0 {
+        // Garden is empty, so return empty vector
         return Vec::new();
     }
+    let cols = garden[0].len();
 
     let mut count_map: HashMap<(usize, usize), u8> = HashMap::new();
 
@@ -16,27 +19,25 @@ pub fn annotate(garden: &[&str]) -> Vec<String> {
         }
     }
 
-    // Second pass: build output directly using garden dimensions
-    let rows = garden.len();
-    let cols = garden.get(0).map_or(0, |r| r.len());
+    // build and return result
+    let mut result = Vec::with_capacity(rows);
+    for r in 0..rows {
+        let mut row_str = String::with_capacity(cols);
+        for c in 0..cols {
+            let cell = garden[r].as_bytes()[c];
+            match cell {
+                b'*' => row_str.push('*'),
+                b' ' => match count_map.get(&(r, c)) {
+                    Some(&count) => row_str.push((b'0' + count) as char),
+                    None => row_str.push(' '),
+                },
+                _ => row_str.push(char::from(cell)),
+            }
+        }
+        result.push(row_str);
+    }
 
-    (0..rows)
-        .map(|row| {
-            (0..cols)
-                .map(|col| {
-                    let cell = garden[row].as_bytes()[col];
-                    match cell {
-                        b'*' => '*',
-                        b' ' => match count_map.get(&(row, col)) {
-                            Some(&count) => char::from_digit(count as u32, 10).unwrap(),
-                            None => ' ',
-                        },
-                        _ => char::from(cell),
-                    }
-                })
-                .collect()
-        })
-        .collect()
+    result
 }
 
 fn increment_neighbors(
