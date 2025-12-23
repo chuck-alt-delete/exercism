@@ -1,10 +1,6 @@
 use std::collections::HashMap;
 
 pub fn annotate(garden: &[&str]) -> Vec<String> {
-    // Get flower and space UTF-8 bytes for easier comparison
-    let flower_byte: u8 = b'*';
-    let space_byte: u8 = b' ';
-
     // Initialize a HashMap to store the count of flowers around each square.
     // This count will be updated as we come across new flowers.
     // Flower locations will have a count of -1.
@@ -16,13 +12,13 @@ pub fn annotate(garden: &[&str]) -> Vec<String> {
             .iter()
             .enumerate()
             .for_each(|(col_index, &byte)| {
-                if byte == flower_byte {
+                if byte == b'*' {
                     update_flower_neighbors(
                         garden,
                         &mut count_map,
                         (row_index as i32, col_index as i32),
                     );
-                } else if byte == space_byte {
+                } else if byte == b' ' {
                     count_map
                         .entry((row_index as i32, col_index as i32))
                         .or_insert(0);
