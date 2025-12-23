@@ -1,103 +1,69 @@
 use std::collections::HashMap;
 
 pub fn annotate(garden: &[&str]) -> Vec<String> {
-    // Initialize a HashMap to store the count of flowers around each square.
-    // This count will be updated as we come across new flowers.
-    // Flower locations will have a count of -1.
-    let mut count_map: HashMap<(i32, i32), i32> = HashMap::new();
+    if garden.is_empty() {
+        return Vec::new();
+    }
 
-    // Iterate through the garden
-    garden.iter().enumerate().for_each(|(row_index, &row)| {
-        row.as_bytes()
-            .iter()
-            .enumerate()
-            .for_each(|(col_index, &byte)| {
-                if byte == b'*' {
-                    update_flower_neighbors(
-                        garden,
-                        &mut count_map,
-                        (row_index as i32, col_index as i32),
-                    );
-                } else if byte == b' ' {
-                    count_map
-                        .entry((row_index as i32, col_index as i32))
-                        .or_insert(0);
-                }
-            });
-    });
+    let mut count_map: HashMap<(usize, usize), u8> = HashMap::new();
 
-    let mut result = Vec::new();
-    garden.iter().enumerate().for_each(|(row_index, &row)| {
-        let mut row_string = String::new();
-        row.as_bytes()
-            .iter()
-            .enumerate()
-            .for_each(|(col_index, &byte)| match byte {
-                b'*' => row_string.push('*'),
-                b' ' => {
-                    let count = count_map
-                        .get(&(row_index as i32, col_index as i32))
-                        .expect("Count map should contain all positions");
-                    if *count == 0 {
-                        row_string.push(' ');
-                    } else {
-                        row_string.push_str(&count.to_string());
+    // First pass: find all flowers and increment their neighbors
+    for (row, line) in garden.iter().enumerate() {
+        for (col, &cell) in line.as_bytes().iter().enumerate() {
+            if cell == b'*' {
+                increment_neighbors(&mut count_map, garden, row, col);
+            }
+        }
+    }
+
+    // Second pass: build output directly using garden dimensions
+    let rows = garden.len();
+    let cols = garden.get(0).map_or(0, |r| r.len());
+
+    (0..rows)
+        .map(|row| {
+            (0..cols)
+                .map(|col| {
+                    let cell = garden[row].as_bytes()[col];
+                    match cell {
+                        b'*' => '*',
+                        b' ' => match count_map.get(&(row, col)) {
+                            Some(&count) => char::from_digit(count as u32, 10).unwrap(),
+                            None => ' ',
+                        },
+                        _ => char::from(cell),
                     }
-                }
-                _ => {}
-            });
-        result.push(row_string);
-    });
-
-    result
+                })
+                .collect()
+        })
+        .collect()
 }
 
-fn update_flower_neighbors(
+fn increment_neighbors(
+    count_map: &mut HashMap<(usize, usize), u8>,
     garden: &[&str],
-    count_map: &mut HashMap<(i32, i32), i32>,
-    (row, column): (i32, i32),
+    row: usize,
+    col: usize,
 ) {
-    // Increase count for all non-flower neighbors.
+    let rows = garden.len();
+    let cols = garden.get(0).map_or(0, |r| r.len());
 
-    // We have visited a flower. Mark flower location with -1
-    count_map.entry((row, column)).or_insert(-1);
+    let row_start = row.saturating_sub(1);
+    let row_end = (row + 2).min(rows);
+    let col_start = col.saturating_sub(1);
+    let col_end = (col + 2).min(cols);
 
-    let neighbors = vec![
-        (row - 1, column - 1),
-        (row - 1, column),
-        (row - 1, column + 1),
-        (row, column - 1),
-        (row, column + 1),
-        (row + 1, column - 1),
-        (row + 1, column),
-        (row + 1, column + 1),
-    ];
-
-    for (r, c) in neighbors {
-        if r < 0 || c < 0 || r >= garden.len() as i32 || c >= garden[0].len() as i32 {
-            continue;
-        }
-
-        let cell = garden
-            .get(r as usize)
-            .and_then(|row| row.as_bytes().get(c as usize));
-
-        match cell {
-            Some(&b' ') => {
-                count_map
-                    .entry((r, c))
-                    .and_modify(|count| *count += 1)
-                    .or_insert(1);
-            }
-            Some(&b'*') if count_map.get(&(r, c)).is_none() => {
-                // Skip flower neighbors.
+    for r in row_start..row_end {
+        for c in col_start..col_end {
+            // Skip the flower itself
+            if (r, c) == (row, col) {
                 continue;
             }
-            None => {
-                // Out of bounds, skip
-                continue;
+
+            // Only increment if it's a space (not another flower)
+            if garden[r].as_bytes()[c] == b' ' {
+                *count_map.entry((r, c)).or_insert(0) += 1;
             }
-            _ => {}
         }
     }
 }
