@@ -48,7 +48,7 @@ fn increment_neighbors(
     // This function increments the neighbor count for a given flower.
     // It is written in a way that avoids bound checks by
     // 1. Using saturating_sub to handle negative indices gracefully.
-    // 2. Using get and map_or to avoid panics and simplify bounds checking.
+    // 2. Using get and is_some_and to avoid invalid indices.
 
     let row_start = row.saturating_sub(1);
     let row_end = row + 2;
