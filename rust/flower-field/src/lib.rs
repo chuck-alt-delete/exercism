@@ -77,7 +77,6 @@ fn update_flower_neighbors(
         if r < 0 || c < 0 || r >= garden.len() as i32 || c >= garden[0].len() as i32 {
             continue;
         }
-        println!("{:?}", count_map);
 
         let cell = garden
             .get(r as usize)
