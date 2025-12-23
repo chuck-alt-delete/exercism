@@ -12,7 +12,7 @@ pub fn annotate(garden: &[&str]) -> Vec<String> {
         line.as_bytes()
             .iter()
             .enumerate()
-            .filter(|&(_, cell)| *cell == b'*')
+            .filter(|&(_, &cell)| cell == b'*')
             .for_each(|(col, _)| {
                 increment_neighbors(&mut count_map, garden, row, col);
             });
